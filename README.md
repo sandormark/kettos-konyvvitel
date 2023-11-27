@@ -1,8 +1,8 @@
 # Login
-  Admin: email: admin@admin.com
-         password: admin123
-  User:  email: teszt@gmail.com
-         password: teszt123
+  Admin: email: admin@admin.com \
+         password: admin123 \
+  User:  email: teszt@gmail.com \
+         password: teszt123 \
 
 
 # Getting Started with Create React App
