@@ -2,7 +2,7 @@
   Admin: email: admin@admin.com \
          password: admin123 \
   User:  email: teszt@gmail.com \
-         password: teszt123 \
+         password: teszt123 
 
 
 # Getting Started with Create React App
