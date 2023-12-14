@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { db } from "../firebase";
+import { db } from "../services/firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import Datatable from '../components/datatable/Datatable';
 import { useNavigate, useParams } from 'react-router-dom';

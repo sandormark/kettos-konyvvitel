@@ -9,14 +9,13 @@ import { setDoc, doc } from 'firebase/firestore';
 import { serverTimestamp } from 'firebase/firestore';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import Datatable from '../datatable/Datatable';
 import Szamlatukor from '../Szamlatukor/Szamlatukor';
-import { useNavigate } from 'react-router-dom';
 
 
 
-const Vevo_szallito = () => {
+
+const Peztar_Elszamolasibetet = () => {
     const [data, setData] = useState({ ["tartozik"]: "311" });
     const [keltDate, setKeltDate] = useState(new Date());
     const [teljesitesDate, setTeljesitesDate] = useState(new Date());
@@ -25,23 +24,16 @@ const Vevo_szallito = () => {
     const [isDisabled, setIsDisabled] = useState(true); // Kezdetben legyen disabled
     const [afakonyveles, SetAfaKonyveles] = useState("466");
     const [activeButton, setActiveButton] = useState(1);
-
-    const navigate = useNavigate();
+    const [beveteKiadasButton, setBevetelKiadasButton] = useState(1);
 
 
 
     const handleButtonClick = (buttonNumber) => {
         setActiveButton(buttonNumber);
-        /*    if (activeButton === 1 && document.getElementById('kovetel').value !== "454") {
-                document.getElementById('kovetel').value = '454';
-                document.getElementById('tartozik').value = '';
-            }
-            if (activeButton !== 1 && document.getElementById('tartozik').value !== ("311")) {
-                document.getElementById('tartozik').value = '311';
-                document.getElementById('kovetel').value = '';
-            }*/
+    }
 
-
+    const handleBevetelKiadasButtonClick = (buttonNumber) => {
+        setBevetelKiadasButton(buttonNumber);
     }
     console.log("dataaaa", data);
 
@@ -52,15 +44,12 @@ const Vevo_szallito = () => {
 
     };
 
-
-
     const handleChildData = (childData) => {
-        console.log('Gyermekkomponens által visszaküldött adat:', childData);
-         if (activeButton === 1) {
-              setData({ ...data,["kovetel"]:childData.value });
-          } else {
-              setData({ ...data,["tartozik"]: childData.value });
-          }
+        if (activeButton === 1) {
+            setData({ ...data, ["kovetel"]: childData.value });
+        } else {
+            setData({ ...data, ["tartozik"]: childData.value });
+        }
 
 
         // Itt lehet kezelni a visszaküldött adatot a szülőkomponensben
@@ -74,26 +63,45 @@ const Vevo_szallito = () => {
         setIsDisabled(!isDisabled); // Invertáljuk az isDisabled állapotát a checkbox változásakor
     };
 
-
-    console.log("data, ", data);
-    console.log("bruott", brutto);
     useEffect(() => {
-
+        console.log("activebutton",activeButton);
+        console.log("bevetel kiadas",beveteKiadasButton);
+        
         if (activeButton === 1) {
+            if (beveteKiadasButton === 1) {
+                SetAfaKonyveles("467");
+                setData({
+                    ...data,
+                    tartozik: "3811",
+                    method: "penztar"
+                });
+            } else {
+                SetAfaKonyveles("466");
+                setData({
+                    ...data,
+                    kovetel: "3811",
+                    method: "penztar"
+                })
+            }
 
-            SetAfaKonyveles("467");
-            setData({
-                ...data,
-                tartozik: "311",
-                method: "vevo"
-            });
-        } else {
-            SetAfaKonyveles("466");
-            setData({
-                ...data,
-                method: "szallito",
-                kovetel: "454"
-            });
+        } else if (activeButton === 2) {
+            if (beveteKiadasButton === 1) {
+                SetAfaKonyveles("467");
+                setData({
+                    ...data,
+                    tartozik: "384",
+                    method: "elszamolasibetet"
+                });
+            } else {
+                SetAfaKonyveles("466");
+                setData({
+                    ...data,
+                    kovetel: "384",
+                    method: "elszamolasibetet"
+                });
+            }
+
+
 
 
         }
@@ -118,14 +126,11 @@ const Vevo_szallito = () => {
         };
 
         fetchData();
-    }, [activeButton]);
-    console.log("opt", selectedOption);
+    }, [activeButton,beveteKiadasButton]);
 
 
     const handleAddKonyveles = async (e) => {
         e.preventDefault();
-        console.log("data", data);
-        console.log("kelt.date", keltDate);
 
         try {
             await setDoc(doc(db, "accounting", data.bizonylatszam), {
@@ -137,8 +142,7 @@ const Vevo_szallito = () => {
                 teljesites_date: teljesitesDate,
                 fiz_hat_date: fizHatDate,
                 timeStamp: serverTimestamp()
-            });
-            window.location.reload(false);
+            });  window.location.reload(false);
             toast.success('Sikeres beküldés!', {
                 position: toast.POSITION.TOP_CENTER,
                 autoClose: 3000
@@ -157,19 +161,27 @@ const Vevo_szallito = () => {
 
 
     }
-    console.log("active, ", activeButton === 2 ? " " : "311");
     return (
         <div>
-            <h1>{activeButton === 1 ? 'Vevő számla' : 'Szállítói számla'}</h1>
-            <div className="vevo_szallito_holder">
+            <h1>{activeButton === 1 ? 'Pénztári bizonylat' : 'Banki bizonylat'}</h1>
+            <div className="penztar_bank_holder">
+                <div className='penztar_bank_valto'>
                 <button type="button"
-                    class={activeButton === 1 ?
-                        "btn btn-outline-primary" : "btn btn-outline-secondary"}
-                    onClick={() => handleButtonClick(1)}>Vevői számla</button>
+                    class={activeButton === 1 ? "btn btn-outline-primary" : "btn btn-outline-secondary"}
+                    onClick={() => handleButtonClick(1)}>Pénztár bizonylat</button>
                 <button type="button"
                     class={activeButton === 2 ? "btn btn-outline-primary" : "btn btn-outline-secondary"}
-                    onClick={() => handleButtonClick(2)}
-                >Szállítói számla</button>
+                    onClick={() => handleButtonClick(2)}>Banki bizonylat</button>
+                     </div>
+                <div class="bevetel_kiadas_button_holder">
+                    <button type="button"
+                        class={beveteKiadasButton === 1 ? "btn btn-outline-primary" : "btn btn-outline-secondary"}
+                        onClick={() => handleBevetelKiadasButtonClick(1)}>Bevétel</button>
+                    <button type="button"
+                        class={beveteKiadasButton === 2 ? "btn btn-outline-primary" : "btn btn-outline-secondary"}
+                        onClick={() => handleBevetelKiadasButtonClick(2)}>Kiadás</button>
+                </div>
+                    <h1>{beveteKiadasButton === 1 ? 'Bevétel' : 'Kiadás'}</h1>
                 <form class="vevo_szallito" onSubmit={handleAddKonyveles}>
                     <div>
                         <label>Keltezés:</label>
@@ -183,9 +195,10 @@ const Vevo_szallito = () => {
                             <option value="" selected disabled hidden>Kérjük válasszon</option>
                             <option>Átutlás</option>
                             <option>Készpénz</option>
+                            <option></option>
                         </select>
                         <label>Partner:</label>
-                        <select name="partner_name" onChange={handleInput}>
+                        <select name="partner_name" defaultValue="Tölt" onChange={handleInput}>
                             {selectedOption && selectedOption.map(item => {
                                 return (<option key={item.value} value={item.label} onChange={handleInput}>{item.label}</option>);
                             })}
@@ -198,23 +211,23 @@ const Vevo_szallito = () => {
                         <input class="form-control" type="text" name="esemeny" onChange={handleInput} />
 
                         <label>Tartozik oldal:</label>
-                        {activeButton === 1 ? <input
+                        {beveteKiadasButton === 1 ? <input
                             class="form-control"
                             id="tartozik"
                             name="tartozik"
                             type="text"
-                            value={"311 - Belföldi követelések forintban"}
+                            value={activeButton === 1 ? "3811 - Pénztárszámla" : "384 - Elszámolási betétszámla"}
                             disabled
                         /> : <Szamlatukor sendDataToParent={handleChildData} />}
 
                         <label>Követel oldal:</label>
-                        {activeButton === 2 ?
+                        {beveteKiadasButton === 2 ?
                             <input
                                 class="form-control"
                                 id="kovetel"
                                 name="kovetel"
                                 type="text"
-                                value={"454 - Szállítók"}
+                                value={activeButton === 1 ? "3811 - Pénztárszámla" : "384 - Elszámolási betétszámla"}
                                 disabled
                             /> : <Szamlatukor sendDataToParent={handleChildData} />}
                     </div>
@@ -276,4 +289,4 @@ const Vevo_szallito = () => {
     )
 }
 
-export default Vevo_szallito
+export default Peztar_Elszamolasibetet

@@ -2,10 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import Logo from "../img/logo.png"
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../firebase';
-import { AuthContext } from '../context/AuthContext';
-import Konyveles from '../pages/Konyveles';
+
 
 
 const Navbar = () => {
@@ -40,19 +37,21 @@ const Navbar = () => {
   }
   return (
 
-    <div className='navbar'>Navbar
+    <div className='navbar'>
       <div className='container'><div className='logo'>
         <img src={Logo} alt="" />
       </div>
         <div className='links'>
-          <Link className="link" to="/Konyveles">
+        <Link className="link" to="/home">
+            <h6>Áttekintés</h6>
+          </Link>
+        
+          <Link className="link" to="/accounting">
             <h6>Könyvelés</h6>
-          </Link>
+        </Link>
+
           <Link className="link" to="/users">
-            <h6>Felhasznalok</h6>
-          </Link>
-          <Link className="link" to="/osszegzes">
-            <h6>Összegzés</h6>
+            <h6>Felhasználók</h6>
           </Link>
           <Link className="link" to="/partners">
             <h6>Partner</h6>
@@ -60,11 +59,9 @@ const Navbar = () => {
           <Link className="link" to="/afa_analitika">
             <h6>Áfa analitika</h6>
           </Link>
-          <Link className="link" to="/konyveles3">
-            <h6>Könyvelés3</h6>
-          </Link>
-          <span>{}</span>
-          <span><button onClick={handleLogout}>Logout</button></span>
+          <span>
+            <button onClick={handleLogout}>Kijelentkezés</button>
+            </span>
 
         </div></div></div>
   )

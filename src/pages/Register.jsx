@@ -1,14 +1,17 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { addDoc, collection, collectionGroup, doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase";
+import { auth, db } from "../services/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { MDBInput, MDBBtn } from 'mdb-react-ui-kit';
 import { toast,ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
+
 const Register = () => {
+    const navigate = useNavigate();
     const [data, setData] = useState({});
 
 
@@ -28,6 +31,11 @@ const Register = () => {
                 ...data,
                 timeStamp: serverTimestamp()
             });
+            toast.success('Sikeres hozzáadás!', {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 3000
+              });
+              navigate("/users");
         } catch (err) {
 
             toast.error('Létező felhasználó!', {

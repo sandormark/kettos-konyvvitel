@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { BrowserRouter, Routes, Route, createBrowserRouter, Outlet, RouterProvider, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
-import About from "./pages/About";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Login from "./pages/Login";
@@ -12,8 +12,8 @@ import Partners from './pages/Partners';
 import Register from "./pages/Register";
 import "./style.scss";
 import { AuthContext } from './context/AuthContext';
-import Konyveles from './pages/Konyveles';
-import Afa from './pages/Afa';
+import Accounting from './pages/Accounting';
+import Afa from './components/Afa/Afa';
 
 function App() {
 
@@ -50,12 +50,11 @@ function App() {
       children: [
         {
           path: "/",
-
           element: <RequireAuth><Home /></RequireAuth>
         },
         {
-          path: "/about",
-          element: <About />
+          path: "/home",
+          element: <RequireAuth><Home /></RequireAuth>
         },
         {
           path: "/contact",
@@ -78,8 +77,12 @@ function App() {
           element: <Partners />
         },
         {
-          path: "/konyveles",
-          element: <Konyveles />
+          path: "/accounting",
+          element: <Accounting />
+        },
+        {
+          path:"/accounting/:id",
+          element:<Accounting/>
         },
         {
           path: "/afa_analitika",

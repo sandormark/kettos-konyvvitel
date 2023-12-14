@@ -2,7 +2,7 @@ import Datatable from "../components/datatable/Datatable"
 import "./users.scss"
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { db } from "../firebase";
+import { db } from "../services/firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useNavigate, useParams } from 'react-router-dom';
 import { getDoc, updateDoc } from 'firebase/firestore';
@@ -33,12 +33,10 @@ const Users = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     if (documentId) {
-      const PartnRef = doc(db, "users", documentId);
+      const UserRef = doc(db, "users", documentId);
       try {
-        await updateDoc(PartnRef, {
-          id: data.id ? data.id : userData.id,
+        await updateDoc(UserRef, {
           name: data.name ? data.name : userData.name,
-          tax_number: data.tax_number ? data.tax_number : userData.tax_number,
           phone: data.phone ? data.phone : userData.phone,
           email: data.email ? data.email : userData.email,
           password: data.password ? data.password : userData.password,
@@ -57,33 +55,9 @@ const Users = () => {
         });
 
       }
-      console.log("Userdata", userData);
-    } else {
-      try {
-        await setDoc(doc(db, "partners", data.id), {
-          ...data,
-          timeStamp: serverTimestamp()
-        });
-        toast.success('Sikeres hozzáadás!', {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 3000
-        });
-        window.location.reload(false);
-
-      } catch (err) {
-        console.log(err);
-        toast.error('Ez a partner már létezik!', {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 3000
-        });
-
-
-
-      }
     }
     console.log("Userdata", userData);
   }
-
 
 
   const [userData, setUserData] = useState({
@@ -147,6 +121,7 @@ const Users = () => {
   return (
     <div>
       <div className="formHolder">
+          <Datatable  collectionName="users" />
         {documentId ? (<form onSubmit={handleAdd}>
           <h1>Felhasználó Szerkesztése</h1>
           <MDBInput label={userData.name || 'Teljes név'} name="name" onChange={handleInput} />
@@ -155,7 +130,6 @@ const Users = () => {
           <MDBInput type='phone' label={userData.phone || 'Partner telefonszám'} name="phone" onChange={handleInput} />
           <MDBBtn type="submit" block>Felhasználó frissítése</MDBBtn>
         </form>) : ("")}
-        <Datatable collectionName="users" />
         <ToastContainer /></div>
 
 

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../firebase';
+import { auth } from '../services/firebase';
 import { AuthContext } from '../context/AuthContext';
 import { MDBInput,MDBBtn } from 'mdb-react-ui-kit';
 import { toast,ToastContainer } from 'react-toastify';
